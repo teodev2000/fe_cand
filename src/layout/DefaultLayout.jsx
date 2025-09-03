@@ -30,7 +30,7 @@ const DefaultLayout = ({ children }) => {
             <Sidebar searchQuery={searchQuery} onChapterSelect={setSelectedChapter} data={menuData} />
           </div>
         <div className={`flex-1 flex flex-col transition-all duration-500 ease-in-out`}>
-          <main className="flex-1 md:p-6 bg-gray-50 mb-3">
+          <main className="flex-1 md:p-6 md:bg-gray-50 bg-blue-300 mb-3">
             {children}
           </main>
         </div>

@@ -14,7 +14,7 @@ const Header = ({ onSearch }) => {
   };
 
   return (
-    <header className="bg-gradient-to-br from-[#dc2626] to-[#b91c1c] text-white px-8 py-4 flex justify-between items-center shadow-lg relative z-50 md:flex-row flex-col md:gap-0 gap-4">
+    <header className="bg-gradient-to-br md:from-[#dc2626] md:to-[#b91c1c] from-blue-800 to-blue-700 text-white px-8 py-4 flex justify-between items-center shadow-lg relative z-50 md:flex-row flex-col md:gap-0 gap-4">
       {/* Left section with logo */}
       <div className="flex items-center w-full md:w-auto">
         {/* Mobile menu button */}
