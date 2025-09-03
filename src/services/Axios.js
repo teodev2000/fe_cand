@@ -20,6 +20,7 @@ function getInstance() {
   }
 
   axiosInstance = axios.create({
+    // baseURL: "http://103.170.122.68:9090",
     baseURL: "https://api.camnangpctpquangninh.vn",
     headers: getHeaders(),
   });

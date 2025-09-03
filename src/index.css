@@ -393,3 +393,23 @@
   box-sizing: border-box;
 }
 
+/* Chuẩn hóa kích thước ảnh trong nội dung sách */
+.book-content img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 240px;
+  object-fit: contain;
+  margin: 0.75rem auto; /* khoảng cách đồng đều trên/dưới */
+  cursor: zoom-in;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* Nếu muốn ảnh có chiều cao cố định trên mobile để đồng bộ hơn */
+@media (max-width: 767px) {
+  .book-content img {
+    height: 180px; /* có thể điều chỉnh 140-220 tùy UX */
+  }
+}
+

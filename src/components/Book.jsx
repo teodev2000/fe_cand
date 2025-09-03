@@ -39,8 +39,12 @@ function splitContentToPages(content, maxHeight) {
   const tempDiv = document.createElement('div');
   tempDiv.style.position = 'absolute';
   tempDiv.style.visibility = 'hidden';
-  tempDiv.style.width = '470px'; // Width của content area (550px - 2*40px padding)
-  tempDiv.style.fontSize = '18px';
+  // Điều chỉnh theo kích thước thực tế trên mobile/desktop
+  const isMobileViewport = (window.innerWidth || 0) < 768;
+  // Desktop: page width 550 - 2*40 (p-10) = 470
+  // Mobile: min page width 315 - 2*40 (p-10) - 2*8 (p-2 content-section) ≈ 219
+  tempDiv.style.width = isMobileViewport ? '219px' : '470px';
+  tempDiv.style.fontSize = isMobileViewport ? '14px' : '18px';
   tempDiv.style.lineHeight = '1.6';
   tempDiv.style.padding = '0';
   tempDiv.className = 'prose prose-lg max-w-none text-gray-700 leading-relaxed';
@@ -83,6 +87,32 @@ function splitContentToPages(content, maxHeight) {
       pages.push(currentPage);
     }
     
+    // Sau khi tách xong, đảm bảo trang mobile không quá ngắn (<50% chiều cao)
+    if (isMobileViewport && pages.length > 1) {
+      const mergedPages = [];
+      let i = 0;
+      const minHeight = maxHeight * 0.5;
+      while (i < pages.length) {
+        let current = pages[i];
+        // Đo chiều cao trang hiện tại
+        tempDiv.innerHTML = current;
+        let currentHeight = tempDiv.offsetHeight;
+        if (currentHeight < minHeight && i < pages.length - 1) {
+          // Gộp với trang kế tiếp để tránh trang quá ngắn
+          const merged = current + pages[i + 1];
+          tempDiv.innerHTML = merged;
+          const mergedHeight = tempDiv.offsetHeight;
+          // Dù có vượt maxHeight, vẫn ưu tiên không tạo trang quá ngắn
+          mergedPages.push(merged);
+          i += 2;
+        } else {
+          mergedPages.push(current);
+          i += 1;
+        }
+      }
+      pages.splice(0, pages.length, ...mergedPages);
+    }
+
     document.body.removeChild(tempDiv);
     return pages.length > 0 ? pages : [content];
     
@@ -100,7 +130,7 @@ function splitContentToPages(content, maxHeight) {
 }
 
 // Đặt Page ra ngoài Book để props được truyền đúng
-const Page = React.forwardRef(({ number, contentPages, selectedChapter }, ref) => {
+const Page = React.forwardRef(({ number, contentPages, selectedChapter, onImageClick }, ref) => {
   const isCover = number === 1;
   const pageContent = contentPages[number - 2] || '';
   
@@ -147,15 +177,41 @@ const Page = React.forwardRef(({ number, contentPages, selectedChapter }, ref) =
             </div>
             
             <div className="content-main flex-1 overflow-hidden">
-              <div className="content-section bg-white p-2 rounded-lg h-full overflow-hidden">
+              <div className="content-section bg-white p-2 rounded-lg h-full overflow-auto md:overflow-hidden md:pb-0 pb-3">
                 {pageContent ? (
                   <div
-                    className="prose prose-lg max-w-none text-gray-700 leading-relaxed h-full overflow-hidden md:!text-[18px] !text-[14px] "
+                    className="book-content prose prose-lg max-w-none text-gray-700 leading-relaxed h-full md:overflow-hidden overflow-visible md:!text-[18px] !text-[14px] "
                     dangerouslySetInnerHTML={{ __html: pageContent }}
                     style={{ 
                       lineHeight: '1.6',
                       wordBreak: 'break-word',
                       overflowWrap: 'break-word'
+                    }}
+                    onMouseDown={(e) => {
+                      const target = e.target;
+                      const img = target && target.closest && target.closest('img');
+                      if (img) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                    onTouchStart={(e) => {
+                      const target = e.target;
+                      const img = target && target.closest && target.closest('img');
+                      if (img) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }
+                    }}
+                    onClick={(e) => {
+                      const target = e.target;
+                      if (!target) return;
+                      const img = target.closest && target.closest('img');
+                      if (img && img.src) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (onImageClick) onImageClick(img.src);
+                      }
                     }}
                   />
                 ) : selectedChapter?.hasContent === false ? (
@@ -185,13 +241,16 @@ const Book = ({ selectedChapter }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [key, setKey] = useState(0);
   const [contentPages, setContentPages] = useState([]);
+  const [previewSrc, setPreviewSrc] = useState('');
   
   // Tính toán chiều cao có sẵn cho content
   const BOOK_HEIGHT = 800;
-  const BOOK_PADDING = 80; // padding top/bottom của page
+  const BOOK_PADDING = 80; // padding top/bottom của page (p-10)
   const HEADER_HEIGHT = 120; // chiều cao header + page number
-  const CONTENT_PADDING = 48; // padding của content section
-  const AVAILABLE_HEIGHT = BOOK_HEIGHT - (BOOK_PADDING * 2) - HEADER_HEIGHT - CONTENT_PADDING;
+  // Trên mobile, content-section dùng p-2 => 16px; desktop khoảng 48px
+  const CONTENT_PADDING_DESKTOP = 48;
+  const CONTENT_PADDING_MOBILE = 16;
+  const AVAILABLE_HEIGHT = BOOK_HEIGHT - (BOOK_PADDING * 2) - HEADER_HEIGHT - CONTENT_PADDING_DESKTOP;
   const [availableHeightMobile, setAvailableHeightMobile] = useState(AVAILABLE_HEIGHT);
 
   useEffect(() => {
@@ -202,9 +261,9 @@ const Book = ({ selectedChapter }) => {
         const viewportHeight = window.innerHeight || 800;
         const isMobile = window.innerWidth < 768;
         // Chừa header + khoảng padding/controls; mobile cần dư nhiều hơn
-        const reservedTopBottom = isMobile ? 240 : 160;
+        const reservedTopBottom = isMobile ? 220 : 160; // giảm để không cắt dòng cuối
         const pageHeight = Math.max(360, Math.min(800, viewportHeight - reservedTopBottom));
-        const computedAvailable = pageHeight - (BOOK_PADDING * 2) - HEADER_HEIGHT - CONTENT_PADDING;
+        const computedAvailable = pageHeight - (BOOK_PADDING * 2) - HEADER_HEIGHT - CONTENT_PADDING_MOBILE;
         // Chỉ áp dụng cho mobile để không ảnh hưởng desktop
         if (isMobile) {
           setAvailableHeightMobile(computedAvailable);
@@ -311,17 +370,33 @@ const Book = ({ selectedChapter }) => {
               startPage={0}
               flippingTime={700}
               renderOnlyPageLengthChange={true}
+              clickToFlip={false}
               pageCount={contentPages.length + 1}
             >
               {/* Trang bìa */}
-              <Page number={1} key={1} contentPages={contentPages} selectedChapter={selectedChapter} />
+              <Page number={1} key={1} contentPages={contentPages} selectedChapter={selectedChapter} onImageClick={setPreviewSrc} />
               {/* Các trang nội dung */}
               {contentPages.map((_, idx) => (
-                <Page number={idx + 2} key={idx + 2} contentPages={contentPages} selectedChapter={selectedChapter} />
+                <Page number={idx + 2} key={idx + 2} contentPages={contentPages} selectedChapter={selectedChapter} onImageClick={setPreviewSrc} />
               ))}
             </HTMLFlipBook>
           </div>
         </div>
+        {/* Image Preview Modal */}
+        {previewSrc && (
+          <div className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center" onClick={() => setPreviewSrc('')}>
+            <div className="relative max-w-[90vw] max-h-[90vh]">
+              <img src={previewSrc} alt="Preview" className="w-auto h-auto max-w-[90vw] max-h-[90vh] object-contain rounded-md shadow-lg" />
+              <button
+                onClick={() => setPreviewSrc('')}
+                className="absolute -top-3 -right-3 bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center shadow"
+                aria-label="Close preview"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </BookErrorBoundary>
   );

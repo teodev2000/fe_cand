@@ -262,7 +262,7 @@ const Sidebar = ({ onChapterSelect, searchQuery, data }) => {
               ✕
             </button>
           </div>
-          <div className="py-2 h-[calc(100vh-56px)] overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+          <div onClick={closeMobileSidebar} className="py-2 h-[calc(100vh-56px)] overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
             {filteredData.map(item => renderMenuItem(item))}
           </div>
         </div>
