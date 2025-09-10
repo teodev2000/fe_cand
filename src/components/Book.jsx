@@ -130,7 +130,7 @@ function splitContentToPages(content, maxHeight) {
 }
 
 // Đặt Page ra ngoài Book để props được truyền đúng
-const Page = React.forwardRef(({ number, contentPages, selectedChapter, onImageClick }, ref) => {
+const Page = React.forwardRef(({ number, contentPages, selectedChapter }, ref) => {
   const isCover = number === 1;
   const pageContent = contentPages[number - 2] || '';
   
@@ -177,41 +177,15 @@ const Page = React.forwardRef(({ number, contentPages, selectedChapter, onImageC
             </div>
             
             <div className="content-main flex-1 overflow-hidden">
-              <div className="content-section bg-white p-2 rounded-lg h-full overflow-auto md:overflow-hidden md:pb-0 pb-3">
+              <div className="content-section bg-white p-2 rounded-lg h-full overflow-auto pb-3">
                 {pageContent ? (
                   <div
-                    className="book-content prose prose-lg max-w-none text-gray-700 leading-relaxed h-full md:overflow-hidden overflow-visible md:!text-[18px] !text-[14px] "
+                    className="book-content prose prose-lg max-w-none text-gray-700 leading-relaxed h-full overflow-visible md:!text-[18px] !text-[14px] "
                     dangerouslySetInnerHTML={{ __html: pageContent }}
                     style={{ 
                       lineHeight: '1.6',
                       wordBreak: 'break-word',
                       overflowWrap: 'break-word'
-                    }}
-                    onMouseDown={(e) => {
-                      const target = e.target;
-                      const img = target && target.closest && target.closest('img');
-                      if (img) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }
-                    }}
-                    onTouchStart={(e) => {
-                      const target = e.target;
-                      const img = target && target.closest && target.closest('img');
-                      if (img) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }
-                    }}
-                    onClick={(e) => {
-                      const target = e.target;
-                      if (!target) return;
-                      const img = target.closest && target.closest('img');
-                      if (img && img.src) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (onImageClick) onImageClick(img.src);
-                      }
                     }}
                   />
                 ) : selectedChapter?.hasContent === false ? (
@@ -241,7 +215,7 @@ const Book = ({ selectedChapter }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [key, setKey] = useState(0);
   const [contentPages, setContentPages] = useState([]);
-  const [previewSrc, setPreviewSrc] = useState('');
+  
   
   // Tính toán chiều cao có sẵn cho content
   const BOOK_HEIGHT = 800;
@@ -370,33 +344,18 @@ const Book = ({ selectedChapter }) => {
               startPage={0}
               flippingTime={700}
               renderOnlyPageLengthChange={true}
-              clickToFlip={false}
+              clickToFlip={true}
               pageCount={contentPages.length + 1}
             >
               {/* Trang bìa */}
-              <Page number={1} key={1} contentPages={contentPages} selectedChapter={selectedChapter} onImageClick={setPreviewSrc} />
+              <Page number={1} key={1} contentPages={contentPages} selectedChapter={selectedChapter} />
               {/* Các trang nội dung */}
               {contentPages.map((_, idx) => (
-                <Page number={idx + 2} key={idx + 2} contentPages={contentPages} selectedChapter={selectedChapter} onImageClick={setPreviewSrc} />
+                <Page number={idx + 2} key={idx + 2} contentPages={contentPages} selectedChapter={selectedChapter} />
               ))}
             </HTMLFlipBook>
           </div>
         </div>
-        {/* Image Preview Modal */}
-        {previewSrc && (
-          <div className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center" onClick={() => setPreviewSrc('')}>
-            <div className="relative max-w-[90vw] max-h-[90vh]">
-              <img src={previewSrc} alt="Preview" className="w-auto h-auto max-w-[90vw] max-h-[90vh] object-contain rounded-md shadow-lg" />
-              <button
-                onClick={() => setPreviewSrc('')}
-                className="absolute -top-3 -right-3 bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center shadow"
-                aria-label="Close preview"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </BookErrorBoundary>
   );

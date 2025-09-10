@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import useStore from '../store/useStore';
 import { menuService } from '../services/MenuService';
 import { sectionPageService } from '../services/SectionPageService';
@@ -238,34 +239,39 @@ const Sidebar = ({ onChapterSelect, searchQuery, data }) => {
         </div>
       </div>
 
-      {/* Mobile overlay sidebar */}
+      {/* Mobile overlay sidebar (rendered in a portal to escape transformed ancestors on iOS) */}
       <div className={`md:hidden`}>
-        {/* Backdrop */}
-        {isMobileSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-[1px] z-[60]"
-            onClick={closeMobileSidebar}
-          />
-        )}
-        {/* Panel */}
-        <div
-          className={`fixed top-0 left-0 h-screen w-[85%] max-w-[360px] bg-white z-[61] shadow-2xl transform transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-        >
-          <div className="sticky top-0 z-10 bg-gradient-to-br from-[#fef3c7] to-[#fde68a] text-gray-800 border-b-2 border-[#fbbf24] shadow-lg p-3 flex items-center">
-            <span className="mr-2">📚</span>
-            <span className="font-semibold">Mục lục</span>
-            <button
-              className="ml-auto px-2 py-1 rounded bg-black/5 hover:bg-black/10 active:scale-95"
-              onClick={closeMobileSidebar}
-              aria-label="Đóng mục lục"
+        {createPortal(
+          <>
+            {/* Backdrop */}
+            {isMobileSidebarOpen && (
+              <div
+                className="fixed inset-0 bg-black/40 backdrop-blur-[1px] z-[1000]"
+                onClick={closeMobileSidebar}
+              />
+            )}
+            {/* Panel */}
+            <div
+              className={`fixed top-0 left-0 h-[100dvh] w-[85%] max-w-[360px] bg-white z-[1001] shadow-2xl transform transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
-              ✕
-            </button>
-          </div>
-          <div onClick={closeMobileSidebar} className="py-2 h-[calc(100vh-56px)] overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
-            {filteredData.map(item => renderMenuItem(item))}
-          </div>
-        </div>
+              <div className="sticky top-0 z-10 bg-gradient-to-br from-[#fef3c7] to-[#fde68a] text-gray-800 border-b-2 border-[#fbbf24] shadow-lg p-3 flex items-center" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+                <span className="mr-2">📚</span>
+                <span className="font-semibold">Mục lục</span>
+                <button
+                  className="ml-auto px-2 py-1 rounded bg-black/5 hover:bg-black/10 active:scale-95"
+                  onClick={closeMobileSidebar}
+                  aria-label="Đóng mục lục"
+                >
+                  ✕
+                </button>
+              </div>
+              <div onClick={closeMobileSidebar} className="py-2 h-[calc(100dvh-56px)] overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+                {filteredData.map(item => renderMenuItem(item))}
+              </div>
+            </div>
+          </>,
+          document.body
+        )}
       </div>
     </>
   );
