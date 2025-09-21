@@ -141,10 +141,10 @@ const Sidebar = ({ onChapterSelect, searchQuery, data }) => {
         <div
           className={`flex items-center p-3 cursor-pointer transition-all duration-300 border-l-4 ${
             isSelected 
-              ? 'border-yellow-500 bg-gradient-to-r from-yellow-100 to-orange-100' 
-              : 'border-transparent hover:border-yellow-300'
+              ? 'border-sky-500 bg-gradient-to-r from-sky-100 to-sky-100' 
+              : 'border-transparent hover:border-sky-300'
           } ${
-            isHovered && !isSelected ? 'bg-gradient-to-r from-yellow-50 to-orange-50' : 'bg-white hover:bg-gray-50'
+            isHovered && !isSelected ? 'bg-gradient-to-r from-sky-50 to-sky-50' : 'bg-white hover:bg-gray-50'
           } ${isItemLoading ? 'opacity-60 cursor-wait' : ''}`}
           style={{ paddingLeft }}
           onClick={() => !isItemLoading && handleItemClick(item)}
@@ -153,7 +153,7 @@ const Sidebar = ({ onChapterSelect, searchQuery, data }) => {
         >
           {/* Name */}
           <span className={`flex-1 font-medium transition-colors duration-300 ${
-            isSelected ? 'text-yellow-800 font-semibold' : ''
+            isSelected ? 'text-sky-800 font-semibold' : ''
           }`}>
             {item.name}
           </span>
@@ -221,12 +221,12 @@ const Sidebar = ({ onChapterSelect, searchQuery, data }) => {
         className={`hidden md:block bg-white border-r-3 border-gray-200 h-[calc(100vh-100px)] overflow-y-auto shadow-[2px_0_15px_rgba(0,0,0,0.1)] scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400 transition-all duration-500 ease-in-out absolute top-0 left-0 w-[350px]`}
       >
         <div 
-          className={`sticky top-0 z-10 bg-gradient-to-br from-[#fef3c7] to-[#fde68a] text-gray-800 border-b-2 border-[#fbbf24] shadow-lg p-4`}
+          className={`sticky top-0 z-10 bg-gradient-to-br from-sky-700 to-sky-800 text-gray-800 border-b-2 border-sky-900 shadow-lg p-4`}
           title={"Mục lục"}
         >
           <h2 className="m-0 text-[1.5rem] font-bold drop-shadow-[2px_2px_4px_rgba(0,0,0,0.3)] flex items-center">
             <span className="mr-3">📚</span>
-            <span>Mục lục</span>
+            <span className='text-white'>Mục lục</span>
           </h2>
           {searchQuery && (
             <div className="mt-3 text-sm bg-white/20 p-2.5 rounded-lg backdrop-blur-sm border border-white/30">
@@ -254,7 +254,7 @@ const Sidebar = ({ onChapterSelect, searchQuery, data }) => {
             <div
               className={`fixed top-0 left-0 h-[100dvh] w-[85%] max-w-[360px] bg-white z-[1001] shadow-2xl transform transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
             >
-              <div className="sticky top-0 z-10 bg-gradient-to-br from-[#fef3c7] to-[#fde68a] text-gray-800 border-b-2 border-[#fbbf24] shadow-lg p-3 flex items-center" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+              <div className="sticky top-0 z-10 bg-gradient-to-br from-sky-700 to-sky-800 text-gray-800 border-b-2 border-sky-900 shadow-lg p-3 flex items-center" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
                 <span className="mr-2">📚</span>
                 <span className="font-semibold">Mục lục</span>
                 <button

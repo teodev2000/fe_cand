@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-r md:from-[#dc2626] md:to-[#b91c1c] from-blue-800 to-blue-700 text-white py-4 mt-auto">
+    <footer className="bg-gradient-to-r md:from-sky-900 md:to-sky-700 from-blue-800 to-blue-700 text-white py-4 mt-auto">
       <div className="container mx-auto px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
 
@@ -46,16 +46,16 @@ const Footer = () => {
             <span className="text-yellow-300">⭐</span>
             <div className="text-sm">
               <div className="font-semibold">CẨM NANG PHÒNG CHỐNG TỘI PHẠM VÀ VI PHẠM PHÁP LUẬT</div>
-              <div className="text-xs opacity-80">© 2024 Công an tỉnh Quảng Ninh • Phối hợp với Mobifone</div>
+              <div className="text-xs opacity-80">© 2025 Công an tỉnh Quảng Ninh • Phối hợp với Mobifone</div>
             </div>
           </div>
 
         </div>
 
         {/* Bottom line */}
-        <div className="border-t border-white/20 mt-3 pt-3 text-center text-xs opacity-75">
+        {/* <div className="border-t border-white/20 mt-3 pt-3 text-center text-xs opacity-75">
           Hỗ trợ người dân, doanh nghiệp thực hiện thủ tục hành chính • Đường dây nóng 24/7
-        </div>
+        </div> */}
       </div>
     </footer>
   );

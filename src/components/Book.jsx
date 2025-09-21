@@ -142,31 +142,29 @@ const Page = React.forwardRef(({ number, contentPages, selectedChapter }, ref) =
       ref={ref}
     >
       {isCover ? (
-        <div className="cover-design text-white relative h-full">
+        <div className="cover-design text-white relative md:h-full h-[529px] w-full ">
             
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
-             style={{ backgroundImage: `url(${picture})` }}>
-        </div>
-        
-        {/* Red overlay */}
-        <div className="absolute inset-0 bg-red-600 opacity-40"></div>
-        
-      
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          <div className="cover-title text-lg sm:text-xl lg:text-3xl font-bold mb-4 sm:mb-6 tracking-wider leading-tight">
-            CẨM NANG PHÒNG CHỐNG<br/>TỘI PHẠM VÀ VI PHẠM<br/>PHÁP LUẬT
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
+              style={{ backgroundImage: `url(${picture})` }}>
           </div>
-          <div className="cover-subtitle text-lg sm:text-xl lg:text-2xl mb-6 sm:mb-8">ĐOÀN THANH NIÊN</div>
-          <div className="cover-emblem text-4xl sm:text-5xl lg:text-6xl mb-6 sm:mb-8 text-yellow-400">★</div>
+          
+          {/* Red overlay */}
+          <div className="absolute inset-0 opacity-40 d"></div>
+          
+        
+          <div className="relative z-10 h-full flex flex-col justify-center items-center">
+            <div className="cover-title text-lg sm:text-xl lg:text-3xl font-bold mb-4 sm:mb-6 tracking-wider leading-tight">
+              CẨM NANG PHÒNG CHỐNG<br/>TỘI PHẠM VÀ VI PHẠM<br/>PHÁP LUẬT
+            </div>
+          </div>
         </div>
-      </div>
 
       ) : (
         <div className="chapter-content text-left h-full flex flex-col">
-          <div className="chapter-header mb-3 bg-gradient-to-r from-[#fef3c7] to-[#fde68a] md:p-3 p-1 rounded-lg border-l-4 border-[#fbbf24] flex-shrink-0">
+          <div className="chapter-header mb-3 bg-gradient-to-r from-sky-700 to-sky-600 md:p-3 p-1 rounded-lg border-l-4 border-sky-900 flex-shrink-0">
             <div className="flex items-center md:mb-4 mb-1">
               <div className="chapter-info">
-                <h1 className="md:text-2xl text-base font-bold mb-2 text-gray-800">{selectedChapter?.title}</h1>
+                <h1 className="md:text-2xl text-base font-bold mb-2 text-white">{selectedChapter?.title}</h1>
               </div>
             </div>
           </div>

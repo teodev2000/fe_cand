@@ -1,5 +1,33 @@
 @import "tailwindcss";
 
+* {
+  font-family: "Tinos", serif;
+}
+
+.tinos-regular {
+  font-family: "Tinos", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.tinos-bold {
+  font-family: "Tinos", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.tinos-regular-italic {
+  font-family: "Tinos", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.tinos-bold-italic {
+  font-family: "Tinos", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
 /* Custom CSS for book thickness effect */
 .rotate-0\.5 {
   transform: rotate(0.5deg);
